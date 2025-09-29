@@ -1,5 +1,3 @@
- Remote Controller (ESP32 + LoRa)
-
 # Remote Controller (ESP32 + LoRa)
 
 This firmware turns an ESP32 into a simple two-channel handheld controller. It reads two potentiometers (Left/Right), maps their 12-bit ADC values to 8-bit, and transmits them at a fixed rate over LoRa (433 MHz by default). The receiver drives two PWM outputs accordingly.
