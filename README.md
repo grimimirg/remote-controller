@@ -91,7 +91,3 @@ Radio PHY defaults: `SF7`, `BW=125 kHz`, `CR=4/5`, `syncWord=0x12`. Keep them i
 ## Regulatory Notes
 
 LoRa modulation, frequency, output power, and duty-cycle must comply with your local regulations. 433 MHz and 868 MHz bands have region-specific limits. Adjust settings accordingly.
-
-## Credits
-
-Built on top of the _LoRa_ Arduino library by Sandeep Mistry.
