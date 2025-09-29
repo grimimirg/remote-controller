@@ -33,8 +33,8 @@
 #define LORA_RST     14
 #define LORA_DIO0    26
 
-#define PIN_POT_LEFT   34   // ADC1, input-only on ESP32
-#define PIN_POT_RIGHT  35   // ADC1, input-only on ESP32
+#define PIN_POT_LEFT   33   // ADC1, input-only on ESP32
+#define PIN_POT_RIGHT  25   // ADC1, input-only on ESP32
 
 // Transmit 20 packets per second (50 ms period)
 static const uint32_t TX_PERIOD_MS = 50;
@@ -62,7 +62,8 @@ static uint8_t crc8Dallas(const uint8_t* data, size_t length) {
 static inline uint8_t mapAdc12bitTo8bit(int adcValue) {
   if (adcValue < 0) adcValue = 0;
   if (adcValue > 4095) adcValue = 4095;
-  return (uint8_t)((adcValue + 8) >> 4);
+  uint32_t s = (uint32_t)adcValue * 255u + 2047u; // rounding
+  return (uint8_t)(s / 4095u);                    // 0..255 without overflow
 }
 
 void setup() {
@@ -95,10 +96,13 @@ void loop() {
   lastTxMillis = nowMillis;
 
   // Sample analog inputs and convert to 8-bit channels
-  const uint8_t leftChannelValue  = mapAdc12bitTo8bit(analogRead(PIN_POT_LEFT));
-  const uint8_t rightChannelValue = mapAdc12bitTo8bit(analogRead(PIN_POT_RIGHT));
+  int leftValue = analogRead(PIN_POT_LEFT);
+  int rightValue = analogRead(PIN_POT_RIGHT);
+  
+  const uint8_t leftChannelValue  = mapAdc12bitTo8bit(leftValue);
+  const uint8_t rightChannelValue = mapAdc12bitTo8bit(rightValue);
 
-  Serial.printf("Left -> %u | Right -> %u\n", (unsigned)leftChannelValue, (unsigned)rightChannelValue);
+  Serial.printf("Left -> %i | Right -> %i\n", leftValue, rightValue);
 
   // Build the packet (8 bytes)
   uint8_t packet[8];
@@ -117,6 +121,4 @@ void loop() {
 
   // Increment sequence (wraps naturally at 65535)
   packetSequence++;
-
-  sleep(250);
 }
