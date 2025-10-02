@@ -81,11 +81,17 @@ void setup() {
 
   Serial.println("LoRa initialization success!");
 
+  //=============================
+  // NOTE: Keep these settings aligned with the receiver
+  //=============================
   LoRa.setSpreadingFactor(7);       // lower latency, reasonable range
   LoRa.setSignalBandwidth(125E3);   // 125 kHz is a common default
   LoRa.setCodingRate4(5);           // 4/5: moderate robustness
   LoRa.enableCrc();                 // PHY CRC in addition to our payload CRC
   LoRa.setSyncWord(0x12);           // change to isolate from other nodes
+  //=============================
+  
+  LoRa.setTxPower(5);               // Low dBm (1-5) for bench tests. Increase for long range.
 }
 
 void loop() {
@@ -102,7 +108,7 @@ void loop() {
   const uint8_t leftChannelValue  = mapAdc12bitTo8bit(leftValue);
   const uint8_t rightChannelValue = mapAdc12bitTo8bit(rightValue);
 
-  Serial.printf("Left -> %i | Right -> %i\n", leftValue, rightValue);
+  // Serial.printf("Left -> %i | Right -> %i\n", leftValue, rightValue);
 
   // Build the packet (8 bytes)
   uint8_t packet[8];
