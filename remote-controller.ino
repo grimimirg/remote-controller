@@ -3,7 +3,7 @@
 #include <LoRa.h>
 
 /*
-  Remote Controller (ESP32 + SX127x, 868 MHz)
+  Remote Controller (ESP32 + SX127x, 433 MHz)
 
   Sends two analog channels (Left/Right) read from potentiometers over LoRa,
   at a fixed rate (every 50 ms). Packet format is compact and validated by CRC-8.
@@ -25,7 +25,7 @@
 */
 
 // ==== Pin configuration (adjust to your board/wiring) ====
-#define LORA_FREQ_HZ 868E6
+#define LORA_FREQ_HZ 433E6
 #define LORA_SCK     18
 #define LORA_MISO    19
 #define LORA_MOSI    23
@@ -33,8 +33,8 @@
 #define LORA_RST     14
 #define LORA_DIO0    26
 
-#define PIN_POT_LEFT   33   // ADC1, input-only on ESP32
-#define PIN_POT_RIGHT  25   // ADC1, input-only on ESP32
+#define PIN_POT_LEFT   34   // ADC1, input-only on ESP32
+#define PIN_POT_RIGHT  35   // ADC1, input-only on ESP32
 
 // Transmit 20 packets per second (50 ms period)
 static const uint32_t TX_PERIOD_MS = 50;
@@ -68,6 +68,9 @@ static inline uint8_t mapAdc12bitTo8bit(int adcValue) {
 
 void setup() {
   Serial.begin(115200);
+  
+  // Initialize ADC resolution
+  analogReadResolution(12);
 
   // --- LoRa radio init ---
   SPI.begin(LORA_SCK, LORA_MISO, LORA_MOSI, LORA_CS);
